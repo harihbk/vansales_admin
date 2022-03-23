@@ -124,7 +124,7 @@ export default function AddFields( {...props} ) {
         
      
    
-          <form >
+          <form>
         {
             formValues?.map((element,index)=>(
                 <>
@@ -163,16 +163,11 @@ export default function AddFields( {...props} ) {
                                     </>
                                     ))
                                 }
-                                   
                                 <Grid item style={{ display:'flex' }} justifyContent="center" alignItems="center">
                                     <Button variant="contained" onClick={ () => addinnerFormFields(index) }>Add</Button>
                                 </Grid> 
-
                             </Grid> 
-                        </ListItem>
-
-                      
-                                    
+                        </ListItem>               
                 </List>
                 </> 
             ))
