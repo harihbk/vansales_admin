@@ -15,17 +15,19 @@ import {  TextField, Grid } from "@material-ui/core";
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import { useForm } from "react-hook-form";
+import axios from 'axios';
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function AddFields( {...props} ) {
-    const { _addfield , _setAddfield } = props;
+    const { _addfield , _setAddfield , _childfunction} = props;
     const [open, setOpen] = React.useState(false);
-    const [formValues, setFormValues] = React.useState([{ modulename: "", slugname : "", fields : [ { field : ""} ] }])
+    const [formValues, setFormValues] = React.useState([{ modulename: "", slugname : "", fields : [ { field : ""} ] }]);
 
-    const { register , unregister ,handleSubmit , formState : {errors} , reset} = useForm();
+    const { register , unregister , remove ,handleSubmit , getValues ,setValue, formState : {errors} , reset} = useForm();
 
    
   
@@ -56,40 +58,92 @@ export default function AddFields( {...props} ) {
 
      let addinnerFormFields = (index) => {
         let newFormValues = [...formValues];
-        console.log(newFormValues);
         newFormValues[index]['fields'].push({ field : ""})
-          
         setFormValues(newFormValues)
-
      }
 
 
     let removeFormFields = (i) => {
         let newFormValues = [...formValues];
         newFormValues.splice(i, 1);
-        setFormValues(newFormValues)
-
+        setFormValues(newFormValues);
         // unregister form of index
         unregister(`test.${i}`);
 
     }
 
     let removeinnerFormFields = (innerindex , outerindex ) => {
+     
         let newFormValues = [...formValues];
-        newFormValues[outerindex].fields.splice(innerindex,1)
-        setFormValues(newFormValues)
+        newFormValues[outerindex].fields.splice(innerindex,1);
 
+       // console.log([ outerindex , innerindex ]);
+       // console.log( newFormValues[outerindex].fields );
+      console.log(getValues(`test.${outerindex}.fields.${innerindex}`)) 
+       unregister(`test.${outerindex}.fields.${innerindex}`);
+
+       setFormValues(newFormValues);
+       console.log(newFormValues[outerindex].fields);
     }
 
 
-    // let handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     alert(JSON.stringify(formValues));
-    // }
-  
      let onsubmit = (data) => {
-      console.log(data);
+      let _data = data['test'];
+   console.log(data);
+
+      if(_addfield.edit){
+       axios.patch(`${process.env.REACT_APP_BASE_URL}/modulepermission/update`,_data)
+      .then(d=>{   
+
+        _childfunction("Module Permission Updated Successfully","success");
+        _setAddfield({status : false})
+        
+
+      })
+      .catch(e=>{
+        _childfunction("Module Permission Not Updated","error");
+        _setAddfield({status : false})
+      })
+      } else {
+      axios.post(`${process.env.REACT_APP_BASE_URL}/modulepermission`,_data)
+      .then(d=>{   
+        _childfunction("Module Permission create Successfully","success");
+        _setAddfield({status : false})
+       console.log(d);
+        
+      })
+      .catch(e=>{
+        _childfunction("Module Permission Not Create","error");
+        _setAddfield({status : false})
+         console.log(e);
+      })
+
+      }
+
+
      }
+
+     React.useEffect(()=>{
+       // data from parent 
+     if(_addfield.edit){
+         let modulepermission =  _addfield.modulepermission;
+         setFormValues(modulepermission)
+         for (let x in modulepermission) {
+          setValue(`test.${x}.modulename`, modulepermission[x].modulename)
+          setValue(`test.${x}.slugname`, modulepermission[x].slugname)
+          setValue(`test.${x}.role`, modulepermission[x].role)
+          setValue(`test.${x}.subrole`, modulepermission[x].subrole)
+          setValue(`test.${x}._id`, modulepermission[x]._id)
+
+           let fields = modulepermission[x].fields;
+           for (let xx in fields ) {
+            setValue(`test.${x}.fields.${xx}.field`,fields[xx].field)
+            setValue(`test.${x}.fields.${xx}._id`,fields[xx]._id)
+           }
+        }
+     }
+     },[_addfield])
+
 
      const hStyle = { color: 'red' };
 
@@ -128,12 +182,15 @@ export default function AddFields( {...props} ) {
         {
             formValues?.map((element,index)=>(
                 <>
-                 <List sx={{  bgcolor: 'background.paper' }}>
+                <div {...setValue(`test.${index}.role`, _addfield.rowData.role._id)}></div>
+                <div {...setValue(`test.${index}.subrole`, _addfield.rowData._id)}></div>
+
+                 <List sx={{  bgcolor: 'background.paper' }} key={index}>
                         <ListItem disableGutters>
                             <Grid container spacing={2} justifyContent="center" alignItems="center" direction="column">
                                 <Grid container direction="row" spacing={2}  xs={12} justifyContent="center" style={{ marginBottom : '12px' }}>
                                     <Grid item  >
-                                        <TextField variant="outlined" label="Module Name"   {...register(`test.${index}.modulename`,{ required: true })}   ></TextField>
+                                        <TextField variant="outlined" label="Module Name"   {...register(`test.${index}.modulename`,{ required: true })} ></TextField>
                                         { errors?.['test']?.[index]?.['modulename']  && <p style={ hStyle }>Module Name is required</p>}
 
                                     </Grid>  
@@ -152,9 +209,9 @@ export default function AddFields( {...props} ) {
                                     <>
                                         <Grid container style={{ maxwidth : '108%'}} direction="row" spacing={1} xs={12} justifyContent="center" style={{ marginBottom : '12px' }}>
                                             <Grid item>
-                                                <TextField variant="outlined" label="Field Name" {...register(`test.${index}.fields.${i}.field`,{ required: true })} ></TextField>
+                                            {/* <TextField variant="outlined" label="Field Name"  name="field" value={e.field || ""}  onChange={e => handleinnerChange(i ,index, e)} ></TextField> */}
+                                                <TextField variant="outlined" label="Field Name"  { ...register(`test.${index}.fields.${i}.field`,{ required: true }) }  ></TextField>
                                                 { errors?.['test']?.[index]?.['fields']?.[i]?.['field']  && <p style={ hStyle }>Slug is required</p>}
-
                                             </Grid>
                                             <Grid item style={{ display:'flex' }} justifyContent="center" alignItems="center">
                                                 <Button variant="outlined" color="error" onClick={ () => removeinnerFormFields(i , index) }>Remove</Button>

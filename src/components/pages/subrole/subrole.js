@@ -13,6 +13,8 @@ export default function Subrole() {
     const tableRef = React.useRef();
     const [ open , setOpen ] = React.useState(false);
     const [ editdata , setEditdata ] = React.useState(null);
+
+
     const [ addfield , setAddfield ] = React.useState({
       status : false,
       rowData  : {}
@@ -75,12 +77,18 @@ export default function Subrole() {
 
       }
 
+    }
 
 
+    const childfunction = (message,status) => {
 
-     
-
-
+      setSnackbar((state)=>{
+        return {
+          status : true,
+          text   : message,
+          severity : status
+        }
+      })
 
     }
 
@@ -93,12 +101,51 @@ export default function Subrole() {
 
     } 
 
+    const checkExistingData =  (rowData) => {
+      return new Promise((resolve,reject)=>{
+         axios.get(`${process.env.REACT_APP_BASE_URL}/modulepermission`,{ params: { role : rowData.role._id , subrole : rowData._id  } }).then(res=>{
+          resolve(res)
+        }).catch(e=>{
+          reject(e)
+        })
+      })
+    }
+
     const _AddFields = (rowData) => {
-      let obj = {
+
+      checkExistingData(rowData).then(res=>{
+        if(res?.data.length > 0){
+  // if data exist
+        let obj = {
         status : true,
-        rowData : rowData
+        rowData : rowData,
+        edit : true,
+        modulepermission : res?.data
+      }
+       setAddfield(obj)
+
+        } else {
+
+  // if data does not exist
+       let obj = {
+        status : true,
+        rowData : rowData,
+        edit : false
       }
       setAddfield(obj)
+
+        }
+      }).catch(err=>{
+        console.log(err);
+      })
+     
+
+
+      // let obj = {
+      //   status : true,
+      //   rowData : rowData
+      // }
+      // setAddfield(obj)
     }
 
   return (
@@ -106,7 +153,7 @@ export default function Subrole() {
       <div>
       { snackbar?.status &&  <CustomizedSnackbars snackbaralert={snackbar} snackbarstate={setSnackbar}/>}
 
-      { addfield.status && <AddFields _addfield={addfield} _setAddfield={setAddfield}/> }
+      { addfield.status && <AddFields _addfield={addfield} _setAddfield={setAddfield} _childfunction={childfunction}/> }
 
         { open && <AddSubRole _open={open} _setOpen={setOpen} _Onsubmit={Onsubmit} _editdata={editdata} _setEditdata={setEditdata}/> }
         <MaterialTable
@@ -117,6 +164,7 @@ export default function Subrole() {
               icon: 'add',
               onClick: (event, rowData) => {
                 setOpen(true);
+                
               },
               isFreeAction: true,
              

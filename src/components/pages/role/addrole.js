@@ -30,6 +30,7 @@ export default function AddRole({...props}) {
    
   
     const onsubmit = (data) => {
+          onfromchildsubmit(data)
           closemodel(false);
     }
 

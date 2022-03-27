@@ -7,7 +7,9 @@ import Button from '@mui/material/Button';
 import AddRole from "../role/addrole"
 import axios from 'axios';
 import CustomizedSnackbars from "../../common/CustomizedSnackbars";
-import { FaPencilAlt , FaTrashAlt } from "react-icons/fa";
+import { FaPencilAlt , FaTrashAlt  } from "react-icons/fa";
+import { FcAutomatic } from "react-icons/fc";
+import  Rolepermission  from "./rolepermission";
 
 import "./style.scss";
 
@@ -27,6 +29,9 @@ export default function Role() {
     const [gridApi, setGridApi] = useState(null);
     const [editrow , setEditrow] = useState({});
     const [deleterow , SetDeleterow] = useState({});
+    const [permission , setPermission] = useState(false);
+    const [selectedrole , setSelectedrole] = useState('');
+
 
     const [snackbar, setSnackbar] = React.useState({
       status : false,
@@ -51,6 +56,8 @@ export default function Role() {
      console.log(params);
   },[]);
 
+ 
+
 
   const [columnDefs] = useState([
     { field: 'name' ,...columnCentered},
@@ -60,6 +67,7 @@ export default function Role() {
     cellRendererFramework:(params)=>{
    return  <div><FaPencilAlt className="editIcon" onClick={()=>{onEdit(params)}} size={15}></FaPencilAlt>
                 <FaTrashAlt className="deleteIcon" onClick={()=>{onDelete(params)}} size={15}></FaTrashAlt>
+                <FcAutomatic className="deleteIcon" onClick={()=>{onPermission(params)}} size={15}></FcAutomatic>
             </div>
   }
   },
@@ -152,15 +160,30 @@ export default function Role() {
               severity : 'error'
             }
           })
+
          }
        
       });
     }
   }
 
+  const onPermission = (params) => {
+    setSelectedrole(params.data._id);
+    setPermission(true);
+    
+  }
+  const onPermissioncatchstatus = (response) => {
+   console.log(response);
+  }
+
+
+
   return (
     <>
    { snackbar?.status &&  <CustomizedSnackbars snackbaralert={snackbar} snackbarstate={setSnackbar}/>}
+
+   {  permission &&  <Rolepermission  _permission={permission} _setpermission={setPermission} _selectedrole={selectedrole}/>}
+
 
     <Grid  alignItems="center"  container
      justifyContent="center">
