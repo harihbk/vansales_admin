@@ -240,6 +240,22 @@ const Layouts = (props) => {
                   </ListItemIcon>
                   <ListItemText primary="User" />
             </ListItem>
+
+            <ListItem button key="Truck" onClick={()=>navigate("/home/truck")}>
+                  <ListItemIcon>   
+                   <FcCollaboration size={30} />
+                  </ListItemIcon>
+                  <ListItemText primary="Truck" />
+            </ListItem>
+
+            <ListItem button key="DeliveryPlanning" onClick={()=>navigate("/home/delivery")}>
+                  <ListItemIcon>   
+                   <FcCollaboration size={30} />
+                  </ListItemIcon>
+                  <ListItemText primary="DeliveryPlanning" />
+            </ListItem>
+
+
             </List>
             {/* <Divider />
             <List>
