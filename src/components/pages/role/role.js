@@ -1,36 +1,40 @@
-import React , { useState ,useEffect , useCallback } from 'react'
+import React , { useState ,useEffect , useCallback , useRef} from 'react'
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { Grid  } from "@material-ui/core";
+import { Grid, IconButton  } from "@material-ui/core";
 import Button from '@mui/material/Button';
 import AddRole from "../role/addrole"
 import axios from 'axios';
 import CustomizedSnackbars from "../../common/CustomizedSnackbars";
 import { FaPencilAlt , FaTrashAlt  } from "react-icons/fa";
-import { FcAutomatic } from "react-icons/fc";
+import { HiOutlinePencil  } from "react-icons/hi";
+import { BsTrash  } from "react-icons/bs";
+import { AiOutlineSetting } from "react-icons/ai";
+import { BiPlus } from "react-icons/bi";
 import  Rolepermission  from "./rolepermission";
-
-import "./style.scss";
+// import "./style.scss";
+import "./role.css";
 
 
 export const columnCentered = {
   headerClass: 'text-center',
   cellStyle: {
     textAlign: 'center',
-    // Add the following if you are using .ag-header-cell-menu-button 
-    // and column borders are set to none.
-    // marginLeft: '-16px'
+   
   }
 }
 
 export default function Role() {
+  const gridRef = useRef();
+
     const [open, setOpen] = React.useState(false);
     const [gridApi, setGridApi] = useState(null);
     const [editrow , setEditrow] = useState({});
     const [deleterow , SetDeleterow] = useState({});
     const [permission , setPermission] = useState(false);
     const [selectedrole , setSelectedrole] = useState('');
+    const [searchfield , setSearchfield] = useState('');
 
 
     const [snackbar, setSnackbar] = React.useState({
@@ -56,22 +60,46 @@ export default function Role() {
      console.log(params);
   },[]);
 
+  const debounce = (fn, delay) => {
+    let timerId;
+    return (...args) => {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => fn(...args), delay);
+    }
+  };
+
+
+  const handleChangeProductName = () => {
+    let data = document.getElementById('filter-text-box').value
+    setSearchfield(data)
+
+  }
+
+  const onFilterTextBoxChanged = useCallback(debounce(handleChangeProductName, 1000), []);
+
+
  
 
 
   const [columnDefs] = useState([
-    { field: 'name' ,...columnCentered},
-    { field: 'slug',...columnCentered},
-    { field: 'description',...columnCentered},
+    { field: 'name',headerName :'Internal Name' ,...columnCentered ,filter: true },
+    { field: 'slug',headerName :'External Name',...columnCentered,filter: true },
+    // { field: 'description',...columnCentered},
     { field: 'Action',...columnCentered,
     cellRendererFramework:(params)=>{
-   return  <div><FaPencilAlt className="editIcon" onClick={()=>{onEdit(params)}} size={15}></FaPencilAlt>
-                <FaTrashAlt className="deleteIcon" onClick={()=>{onDelete(params)}} size={15}></FaTrashAlt>
-                <FcAutomatic className="deleteIcon" onClick={()=>{onPermission(params)}} size={15}></FcAutomatic>
+   return  <div className="actionBtnGrp">
+              <IconButton className="edit">
+                <HiOutlinePencil className="editIcon" onClick={()=>{onEdit(params)}} size={15}></HiOutlinePencil>
+              </IconButton>
+              <IconButton className="del">
+                <BsTrash className="deleteIcon" onClick={()=>{onDelete(params)}} size={15}></BsTrash>
+              </IconButton>
+              <IconButton className="info">
+                <AiOutlineSetting className="deleteIcon" onClick={()=>{onPermission(params)}} size={15}></AiOutlineSetting>
+              </IconButton>
             </div>
-  }
-  },
-
+          }
+        },
   ]);
 
  
@@ -79,9 +107,17 @@ export default function Role() {
     if (gridApi) {
       const dataSource = {
         getRows: (params) => {
+          console.log(params);
+
           const page = params.startRow === 0 ? 0 : params.startRow ;
-          console.log(page);
-             axios.get(`${process.env.REACT_APP_BASE_URL}/role?$skip=${page}`)
+          let par = ""
+           if(page >= 0){
+            par = `$skip=${page}`
+           }
+           if(searchfield){
+            par = `$skip=${page}&search=${searchfield}`
+           }
+             axios.get(`${process.env.REACT_APP_BASE_URL}/role?${par}`)
             .then(res => {
               params.successCallback(res.data.data, res.data.total);
             }).catch(err => {
@@ -89,10 +125,9 @@ export default function Role() {
             });
         }
       }
-      console.log(dataSource);
       gridApi.setDatasource(dataSource);
     }
-  }, [gridApi,snackbar]);
+  }, [gridApi,snackbar,searchfield]);
 
 
   const getsubmitData = (data)=>{
@@ -184,45 +219,58 @@ export default function Role() {
 
    {  permission &&  <Rolepermission  _permission={permission} _setpermission={setPermission} _selectedrole={selectedrole}/>}
 
-
-    <Grid  alignItems="center"  container
-     justifyContent="center">
-        <Grid container justifyContent = "center" direction="column" style={{ width: 1000 }}>
-            <Grid container justifyContent = "flex-end" >
-                                 <Button
-                                    variant="contained"
-                                    color="primary"
-                                    type="submit"
-                                    className="button-block"
-                                    style={{ width: 10,marginBottom:10 }}
-                                    onClick={()=>{setOpen(true)}}
-                                    >
-                                    Add
-                                    </Button>
-                                 {open && <AddRole onfromchildsubmit={getsubmitData.bind(this)} closemodel={setOpen} snackbar={setSnackbar} editdata={editrow}/>}  
-<div>
-</div>
-      
-            </Grid>
-            <Grid item container justifyContent = "center">
-            <div className="ag-theme-alpine"  style={{height: 400, width: 1000}}  >
-                    <AgGridReact
-                pagination={true}
-                rowModelType={'infinite'}
-                serverSideStoreType={'partial'}
-                paginationPageSize={perPage}
-                cacheBlockSize={perPage}
-                onGridReady={onGridReady}
-                rowHeight={60}
-                defaultColDef={{ flex: 1 }}
-                columnDefs={columnDefs}
+      <div className="custCard">
+        <Grid container justifyContent ="flex-end" alignItems="center">
+          <Grid item xs={10} justifyContent="left">
+            <h2 style={{textAlign: 'left'}}>Role List</h2>
+          </Grid>
+          <Grid item xs={2} >
+              <Button
+                variant="outlined"
+                color="success"
+                type="submit"
+                className="button-block addButton"
+                style={{ marginBottom:10 }}
+                onClick={()=>{setOpen(true)}}
                 >
-                </AgGridReact>
-            </div>
-            </Grid>
+                <BiPlus /> 
+                Add
+                </Button>
+              {open && <AddRole onfromchildsubmit={getsubmitData.bind(this)} closemodel={setOpen} snackbar={setSnackbar} editdata={editrow}/>}  
+          </Grid>
+          <Grid item xs={4}>
+          <input
+            type="text"
+            id="filter-text-box"
+            placeholder="Filter..."
+            onInput={onFilterTextBoxChanged}
+          />
+          </Grid>
         </Grid>
-     
-    </Grid>
+        <Grid  alignItems="center"  container
+        justifyContent="center" className="userTable">
+            <Grid container justifyContent = "flex-end" >
+                <Grid item container justifyContent = "center">
+                  <div className="ag-theme-alpine"  style={{minHeight: 350,height: '100%', width : '100%', justifyContent : 'center'}}  >
+                      <AgGridReact
+                      ref={gridRef}
+                      pagination={true}
+                      rowModelType={'infinite'}
+                      serverSideStoreType={'partial'}
+                      paginationPageSize={perPage}
+                      cacheBlockSize={perPage}
+                      onGridReady={onGridReady}
+                      rowHeight={60}
+                      defaultColDef={{ flex: 1, justifyContent : 'center' }}
+                      columnDefs={columnDefs}
+                      >
+                      </AgGridReact>
+                  </div>
+                </Grid>
+            </Grid>
+        
+        </Grid>
+      </div>
     </>
   
   )

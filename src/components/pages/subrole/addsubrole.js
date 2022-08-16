@@ -23,21 +23,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   
 
   const useStyles = makeStyles((theme)=>
-  createStyles({
-    dialogPaper: {
-      minHeight: '50vh',
-      maxHeight: '50vh',
-      minWidth : '70vh',
-      maxWidth : '70vh'
-  },
-  heading : {
-    textAlign : 'center'
-  },
-  fullWidth : {
-    width : '-webkit-fill-available',
-    marginTop : '15px'
-  },
-  })
+    createStyles({
+        dialogPaper: {
+          minWidth : '70vh',
+          maxWidth : '70vh'
+      },
+      heading : {
+        textAlign : 'center'
+      },
+      fullWidth : {
+        width : '-webkit-fill-available',
+        marginTop : '15px'
+      },
+    })
   )
 
 export default function AddSubRole(props) {
@@ -88,56 +86,58 @@ export default function AddSubRole(props) {
 
   return (
     <>
+      <div >
+          <Dialog
+          className="custModal"
+          open={_open}
+          TransitionComponent={Transition}
+          aria-describedby="alert-dialog-slide-description"
+          classes={{ paper : classes.dialogPaper}}>
+          <div>
+              <form>
+                  <DialogTitle className="modalTitle">Add User</DialogTitle>
+                <DialogContent >
+                    <Grid container direction="column" spacing={2}>
+                          <Grid item xs={12} className = { classes.fullWidth} >
+                            <FormControl  className = { classes.fullWidth}>
+                              <TextField variant="outlined" label="Name" {...register('name', { required: true })}/>
+                            {errors.name && <p>Email is required</p>}
+                            </FormControl>
+                          </Grid>
+                          <Grid item xs={12}>
+                          <FormControl className = { classes.fullWidth} >
+                              <InputLabel id="demo-simple-select-helper-label">Role</InputLabel>
+                              <Select
+                                    fullWidth
+                                    labelId="demo-simple-select-helper-label"
+                                    id="demo-simple-select-helper"
+                                    value={rolevalue}
+                                    label="Role"
+                                    {...register('role', { required: true })}
+                                      onChange = {e=>setRolevalue(e.target.value)}
+                                  >
+                                    <MenuItem value="">
+                                      <em>select</em>
+                                    </MenuItem>
+                                    { role.map(e=>(
+                                    <MenuItem value={e._id}>{e.slug}</MenuItem>
+                                    ))}
+                                  </Select>
+                          </FormControl>
+                          {errors.role && <p>Role is required</p>}
 
-    <Dialog
-    open={_open}
-    TransitionComponent={Transition}
-    aria-describedby="alert-dialog-slide-description"
-    classes={{ paper : classes.dialogPaper}}
-
-  >
-    <Grid container direction="column"  justifyContent="center"  alignItems="center">
-  <form>
-    <DialogContent >
-    <DialogTitle>Add User</DialogTitle>
-               <Grid container direction="column" spacing={2}>
-                    <Grid item >
-                      <TextField variant="outlined" label="Name" {...register('name', { required: true })}/>
-                      {errors.name && <p>Email is required</p>}
-                    </Grid>
-                    <Grid item >
-                    <FormControl className = { classes.fullWidth} >
-                                          <InputLabel id="demo-simple-select-helper-label">Role</InputLabel>
-                                          <Select
-                                               fullWidth
-                                                labelId="demo-simple-select-helper-label"
-                                                id="demo-simple-select-helper"
-                                                value={rolevalue}
-                                                label="Role"
-                                                {...register('role', { required: true })}
-                                                  onChange = {e=>setRolevalue(e.target.value)}
-                                              >
-                                                <MenuItem value="">
-                                                  <em>select</em>
-                                                </MenuItem>
-                                               { role.map(e=>(
-                                                <MenuItem value={e._id}>{e.slug}</MenuItem>
-                                               ))}
-                                              </Select>
-                                              </FormControl>
-                                              {errors.role && <p>Role is required</p>}
-
-                    </Grid>
-                </Grid>
-    </DialogContent>
-</form>
-  
-    </Grid>
-    <DialogActions>
-      <Button onClick={handleSubmit(onsubmit)}>Submit</Button>
-      <Button onClick={Oncancel}>cancel</Button>
-    </DialogActions>
-  </Dialog>
-</>
+                          </Grid>
+                      </Grid>
+                </DialogContent>
+              </form>
+        
+          </div>
+          <DialogActions className="modalAction">
+            <Button  className="cancelBtn" onClick={Oncancel}>Cancel</Button>
+            <Button className="submitBtn" onClick={handleSubmit(onsubmit)}>Submit</Button>
+          </DialogActions>
+        </Dialog>
+      </div>    
+    </>
   )
 }

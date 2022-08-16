@@ -30,7 +30,8 @@ const styles = theme => ({
     display: "flex"
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1
+    zIndex: theme.zIndex.drawer + 1,
+    
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -173,6 +174,7 @@ class Layout extends React.Component {
         <AppBar
           position="fixed"
           className={classes.appBar}
+          color ="secondary"
         >
           <Toolbar disableGutters={true}>
             <IconButton
@@ -192,12 +194,14 @@ class Layout extends React.Component {
             <Typography
               variant="h6"
               color="inherit"
+              style={{textAlign : 'left'}}
               className={classes.grow}
               noWrap
             >
               Vansales
             </Typography>
             <div>
+              <div className="username"><span style={{fontSize : 8}}>Welcome</span> Username</div>
               <IconButton
                 aria-owns={open ? "menu-appbar" : undefined}
                 aria-haspopup="true"

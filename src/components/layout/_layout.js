@@ -20,12 +20,21 @@ import MailIcon from "@material-ui/icons/Mail";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { useNavigate ,Navigate , Outlet} from "react-router-dom";
-import { FcBusinessman , FcCollaboration } from "react-icons/fc";
-
-
+import { AiOutlineLogout } from "react-icons/ai";
+import { FiUsers, FiCheckCircle, FiArchive, FiTruck, FiAnchor, FiGrid, FiFileText } from "react-icons/fi";
+import logo from '../../assets/images/van_logo.png';
+import './layout.css';
+import Collapse from '@mui/material/Collapse';
+import StarBorder from '@mui/icons-material/StarBorder';
+import ListItemButton from '@mui/material/ListItemButton';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 
 const drawerWidth = 220;
-
+const userBarCol = {
+  display : 'flex',
+  alignItems : 'center'
+}
 const styles = theme => ({
   root: {
     display: "flex"
@@ -106,6 +115,13 @@ const Layouts = (props) => {
     const { classes } = props;
     const [open,setOpen] = useState(false); 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [collapseopen, setCollapseopen] = React.useState(false);
+
+    const collapsehandleClick = () => {
+      setCollapseopen(!collapseopen);
+    };
+
+
     const _open = Boolean(anchorEl);
 
     var navigate = useNavigate();
@@ -139,7 +155,7 @@ const Layouts = (props) => {
             position="fixed"
             className={classes.appBar}
           >
-            <Toolbar disableGutters={true}>
+            <Toolbar disableGutters={true} style={{backgroundColor : "#33a153"}}>
               <IconButton
                 color="inherit"
                 aria-label="Open drawer"
@@ -159,11 +175,13 @@ const Layouts = (props) => {
                 color="inherit"
                 className={classes.grow}
                 noWrap
+                style={{textAlign : 'left'}}
               >
-                Vansales
+                <img src={logo} style={{ width : '120px', height : 'auto', paddingTop : 5}}/>
               </Typography>
 
-            <div>
+            <div className="userBarCol" style={userBarCol}>
+              <div className="username"><span style={{fontSize : 12}}>Welcome</span> <span style={{ fontWeight : '600' }}>Username</span></div>
                 <IconButton
                   aria-owns={_open ? "menu-appbar" : undefined}
                   aria-haspopup="true"
@@ -186,9 +204,9 @@ const Layouts = (props) => {
                   open={_open}
                   onClose={handleClose}
                 >
-                  <MenuItem onClick={handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={handleClose}>My account</MenuItem>
-                  <MenuItem onClick={logout}>Logout</MenuItem>
+                  <MenuItem onClick={handleClose}><FiFileText style={{ marginRight : 10 }} /> Profile</MenuItem>
+                  <MenuItem onClick={handleClose}><FiUsers  style={{ marginRight : 10 }} /> My account</MenuItem>
+                  <MenuItem onClick={logout}><AiOutlineLogout  style={{ marginRight : 10 }} /> Logout</MenuItem>
 
                 </Menu>
             </div>
@@ -211,63 +229,100 @@ const Layouts = (props) => {
             open={open}
           >
             <div className={classes.toolbar} />
-            <List>
-  
-            <ListItem button key="Home" onClick={()=>navigate("/home")}>
-                  <ListItemIcon>   
-                   <FcBusinessman size={30} />
-                  </ListItemIcon>
-                  <ListItemText primary="User" />
-            </ListItem>
-  
-            <ListItem button key="Role" onClick={()=>navigate("/home/role")}>
-                  <ListItemIcon>   
-                   <FcCollaboration size={30} />
-                  </ListItemIcon>
-                  <ListItemText primary="Role" />
-            </ListItem>
+            <List className="sideMenu">
+      
+                <ListItem className="active" button key="Home" onClick={()=>navigate("/home")}>
+                      <ListItemIcon  style={{ justifyContent : 'center', paddingRight : 15 }}>   
+                      <FiGrid size={23} />
+                      </ListItemIcon>
+                      <ListItemText primary="Dashboard" />
+                </ListItem>
 
-            <ListItem button key="SubRole" onClick={()=>navigate("/home/subrole")}>
-                  <ListItemIcon>   
-                   <FcCollaboration size={30} />
-                  </ListItemIcon>
-                  <ListItemText primary="SubRole" />
-            </ListItem>
 
-            <ListItem button key="User" onClick={()=>navigate("/home/user")}>
-                  <ListItemIcon>   
-                   <FcCollaboration size={30} />
-                  </ListItemIcon>
-                  <ListItemText primary="User" />
-            </ListItem>
+              
 
-            <ListItem button key="Truck" onClick={()=>navigate("/home/truck")}>
-                  <ListItemIcon>   
-                   <FcCollaboration size={30} />
-                  </ListItemIcon>
-                  <ListItemText primary="Truck" />
-            </ListItem>
+                <ListItem button key="Truck" onClick={()=>navigate("/home/truck")}>
+                      <ListItemIcon  style={{ justifyContent : 'center', paddingRight : 15 }}>   
+                      <FiTruck size={23} />
+                      </ListItemIcon>
+                      <ListItemText primary="Truck" />
+                </ListItem>
 
-            <ListItem button key="DeliveryPlanning" onClick={()=>navigate("/home/delivery")}>
-                  <ListItemIcon>   
-                   <FcCollaboration size={30} />
-                  </ListItemIcon>
-                  <ListItemText primary="DeliveryPlanning" />
-            </ListItem>
+                <ListItem button key="DeliveryPlanning" onClick={()=>navigate("/home/delivery")}>
+                      <ListItemIcon style={{ justifyContent : 'center', paddingRight : 15 }}>   
+                      <FiArchive size={23} />
+                      </ListItemIcon>
+                      <ListItemText primary="DeliveryPlanning" />
+                </ListItem>
+
+
+                <ListItemButton onClick={collapsehandleClick}>
+                    <ListItemIcon>
+                      <InboxIcon />
+                    </ListItemIcon>
+                <ListItemText primary="Settings" />
+                    {collapseopen ? <ExpandLess /> : <ExpandMore />}
+                  </ListItemButton>
+                <Collapse in={collapseopen} timeout="auto" unmountOnExit>
+
+
+                  <List component="div" disablePadding>
+                      <ListItem button key="User" onClick={()=>navigate("/home/user")}>
+                        <ListItemIcon  style={{ justifyContent : 'center', paddingRight : 15 }}>   
+                        <FiUsers size={23} />
+                        </ListItemIcon>
+                        <ListItemText primary="User" />
+                     </ListItem>
+                      
+                  </List>
+
+
+
+                  <List component="div" disablePadding>
+                    <ListItem button key="Designation" onClick={()=>navigate("/home/designation")}>
+                      <ListItemIcon  style={{ justifyContent : 'center', paddingRight : 15 }}>   
+                      <FiUsers size={23} />
+                      </ListItemIcon>
+                      <ListItemText primary="Designation" />
+                    </ListItem>
+                      
+                  </List>
+
+
+                  <List component="div" disablePadding>
+                    <ListItem button key="Role" onClick={()=>navigate("/home/role")}>
+                      <ListItemIcon  style={{ justifyContent : 'center', paddingRight : 15 }}>   
+                      <FiCheckCircle size={23} />
+                      </ListItemIcon>
+                      <ListItemText primary="Role" />
+                </ListItem>
+                      
+                  </List>
+
+                  <List component="div" disablePadding>
+                        <ListItem button key="SubRole" onClick={()=>navigate("/home/subrole")}>
+                              <ListItemIcon  style={{ justifyContent : 'center', paddingRight : 15 }}>   
+                              <FiAnchor size={23} />
+                              </ListItemIcon>
+                              <ListItemText primary="SubRole" />
+                        </ListItem>
+                  </List>
+
+                  <List component="div" disablePadding>
+                        <ListItem button key="Vehicle" onClick={()=>navigate("/home/vehicle")}>
+                              <ListItemIcon  style={{ justifyContent : 'center', paddingRight : 15 }}>   
+                              <FiAnchor size={23} />
+                              </ListItemIcon>
+                              <ListItemText primary="Vehicle Type" />
+                        </ListItem>
+                  </List>
+
+
+                </Collapse>
 
 
             </List>
-            {/* <Divider />
-            <List>
-              {["All mail", "Trash", "Spam"].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List> */}
+           
           </Drawer>
           
           <main className={classes.content}>

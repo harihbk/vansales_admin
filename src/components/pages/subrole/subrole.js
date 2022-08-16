@@ -6,7 +6,10 @@ import CustomizedSnackbars from "../../common/CustomizedSnackbars";
 import AddFields from "./addfields";
 import { FaPencilAlt , FaTrashAlt , FaAddRow } from "react-icons/fa";
 import { FcAddRow } from "react-icons/fc";
-
+import { HiOutlinePencil  } from "react-icons/hi";
+import { BsTrash  } from "react-icons/bs";
+import { Grid, IconButton  } from "@material-ui/core";
+import './subrole.css'
 
   
 export default function Subrole() {
@@ -150,7 +153,7 @@ export default function Subrole() {
 
   return (
       <>
-      <div>
+      <div className="custCard">
       { snackbar?.status &&  <CustomizedSnackbars snackbaralert={snackbar} snackbarstate={setSnackbar}/>}
 
       { addfield.status && <AddFields _addfield={addfield} _setAddfield={setAddfield} _childfunction={childfunction}/> }
@@ -188,9 +191,16 @@ export default function Subrole() {
             {
               title : 'Action' , render : rowData => (
                 <>
-                      <FaPencilAlt className="editIcon" onClick={()=>{onEdit(rowData)}} size={15}></FaPencilAlt>
-                      <FaTrashAlt className="deleteIcon" style={{ marginRight:'10px' }} onClick={()=>{onDelete(rowData)}} size={15}></FaTrashAlt>   
+
+              <IconButton>
+                      <HiOutlinePencil className="editIcon" onClick={()=>{onEdit(rowData)}} size={15}></HiOutlinePencil>
+              </IconButton>
+              <IconButton>
+                      <BsTrash className="deleteIcon" onClick={()=>{onDelete(rowData)}} size={15}></BsTrash> 
+              </IconButton>  
+              <IconButton>        
                       <FcAddRow className="deleteIcon" onClick={()=>{_AddFields(rowData)}} size={20}></FcAddRow>   
+              </IconButton>
 
                 </>
               )

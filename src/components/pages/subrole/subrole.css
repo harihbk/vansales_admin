@@ -1,0 +1,62 @@
+
+
+.custCard{
+    background-color: #fff;
+    box-shadow: 0px 0px 10px 0px #eee;
+    border-radius: 10px;
+    padding: 30px;
+    padding-bottom: 40px;
+}
+.custCard .MuiPaper-elevation2{
+    box-shadow: none;
+}
+.custCard  table.MuiTable-root{
+    border: 1px solid rgb(224, 224, 224);
+}
+
+.custCard  table.MuiTable-root th{
+    background-color: #eee;
+}
+.custCard  .MuiTablePagination-toolbar{
+
+}
+.custCard  .MuiTablePagination-toolbar .MuiIconButton-root{
+    background-color: darkseagreen;
+    padding: 2px;
+    border-radius: 2px;
+    color: #fff;
+    margin: 0 3px;
+    font-size: 12px;
+}
+.custCard  .MuiTablePagination-toolbar .MuiIconButton-root.Mui-disabled{
+    opacity: .6;
+}
+
+.custModal .MuiDialog-paper {
+    border-radius: 15px;
+}
+.custModal .modalAction{
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+.modalAction > button{
+    max-width: 100px;
+    width: 100%;
+}
+.submitBtn{
+    background-color: #33a153 !important;
+    color: #fff !important;
+}
+.cancelBtn{
+    color: #33a153 !important;
+    border-color: #33a153 !important;
+}
+.custCard .MTableToolbar-root-160{
+    padding-left: 0;
+}
+.custModal .modalTitle{
+    text-align: left; 
+    padding-bottom:4;
+    background-color:  #5f5f5f;
+    color: #fff
+}

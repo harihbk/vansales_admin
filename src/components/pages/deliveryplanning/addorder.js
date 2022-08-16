@@ -33,7 +33,16 @@ const useStyles = makeStyles((theme) => ({
   },
   selectEmpty: {
     marginTop: theme.spacing(2)
-  }
+  },
+  root: {
+    color: 'blue'
+  },
+  dialogPaper: {
+      minHeight: '30vh',
+      maxHeight: '30vh',
+      minWidth : '80vh',
+      maxWidth : '80vh'
+  },
 }));
 
 const options = [
@@ -44,7 +53,7 @@ const options = [
 
   
 export default function Addorder({...props}) {
-    const { _addorderpopup , _setAddorderpopup } = props;    
+    const { _addorderpopup , _setAddorderpopup , _childorderids } = props;    
     const [ orderdata , setOrderdata ] = React.useState([]);  
     const [ orderno , setOrderno ] = React.useState('');   
     const [ option , setOption ] = React.useState([]);   
@@ -92,43 +101,39 @@ export default function Addorder({...props}) {
 
 
     const onSubmit = (data) => {
-
-    console.log(selected);
+   // console.log(selected);
+    _childorderids(selected)
+    _setAddorderpopup(false)
     }
 
   return (
     <div>
      
       <Dialog
+        className="custModal"
         open={_addorderpopup}
         TransitionComponent={Transition}
         keepMounted
-        
         aria-describedby="alert-dialog-slide-description"
+        classes={{ paper : classes.dialogPaper}}
       >
-        <DialogTitle>{"Use Google's location service?"}</DialogTitle>
-        <DialogContent>
+        <DialogTitle className="modalTitle">{"Use Google's location service?"}</DialogTitle>
+        <DialogContent style={{paddingTop : 20}}>
           <Box sx={{ width: '100%' }}>
             <Grid spacing={3} columnSpacing={{ xs: 1, sm: 2, md: 3 }} justifyContent="space-around" alignItems="center">
-              
-                <Grid item xs={6}>
-                          <MultiSelect
+                <Grid item xs={12}>
+                  <MultiSelect
                   options={orderdata}
                   value={selected}
                   onChange={setSelected}
-                  labelledBy="Select"
-                  
-                />
+                  labelledBy="Select" />
                 </Grid>
-
-              
             </Grid>
-
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit(onSubmit)}>Submit</Button>
+        <DialogActions className="modalAction">
+          <Button className="cancelBtn" onClick={handleClose}>Cancel</Button>
+          <Button className="submitBtn"  onClick={handleSubmit(onSubmit)}>Submit</Button>
         </DialogActions>
       </Dialog>
     </div>

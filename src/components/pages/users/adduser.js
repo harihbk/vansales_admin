@@ -52,8 +52,9 @@ export default function Adduser(props) {
   const [role , setRole] = React.useState([]);
   const [rolevalue , setRolevalue] = React.useState('');
   const [passwordvalid , setPasswordvalid] = React.useState(true);
+  const [ designation , setDesignation ] = React.useState([])
+  const [designationvalue , setDesignationvalue] = React.useState('');
 
-  
   
 
   React.useEffect(()=>{
@@ -61,13 +62,21 @@ export default function Adduser(props) {
     axios.get(`${process.env.REACT_APP_BASE_URL}/_role`)
     .then(r=>{
       setRole(r.data);
-      console.log(role); 
     })
     .catch(e=>{
       console.log(e);
     })
 
+    axios.get(`${process.env.REACT_APP_BASE_URL}/_designation`)
+    .then(r=>{
+      setDesignation(r.data);
+    })
+    .catch(e=>{
+      console.log(e);
+    })
   },[])
+
+  
 
   // Bind Edit Record
   React.useEffect(()=>{
@@ -76,8 +85,12 @@ export default function Adduser(props) {
       
       var newState = Object.assign({}, _editdata);
       delete newState.role;
-      reset(newState);
-     setRolevalue(_editdata.role[0]._id)
+      delete newState.designation;
+
+    reset(newState);
+    console.log(_editdata);
+     setRolevalue(_editdata.role._id)
+     setDesignationvalue(_editdata.designation?._id )
 
   
   //   _setEditdata(newState)
@@ -132,7 +145,7 @@ export default function Adduser(props) {
                                         </Grid>
                                         <Grid item> 
                                             <TextField
-                                                {...register('empno', { required: true })}
+                                                {...register('empno')}
                                                 type="text"
                                                 placeholder="Emp No"
                                                 fullWidth
@@ -161,7 +174,41 @@ export default function Adduser(props) {
                                             />
                                             {errors.mobile_number && <p>{ errors.mobile_number.message }</p>}
                                         </Grid>
-                                        <Grid item> 
+
+
+
+
+                                        <Grid item style={{ "marginTop" : '15px' }}>
+
+                                          <FormControl className = { classes.fullWidth} >
+                                          <InputLabel id="demo-simple-select-helper-label">Designation</InputLabel>
+                                          <Select
+                                              fullWidth
+                                                labelId="demo-simple-select-helper-label"
+                                                id="demo-simple-select-helper"
+                                                value={designationvalue}
+                                                label="Role"
+                                                {...register('designation', { required: true })}
+                                                  onChange = {e=>setDesignationvalue(e.target.value)}
+                                              >
+                                                <MenuItem value="">
+                                                  <em>select</em>
+                                                </MenuItem>
+                                              { designation.map(e=>(
+                                                <MenuItem value={e._id}>{e.designation}</MenuItem>
+                                              ))}
+                                            
+                                              
+                                              </Select>
+                                              </FormControl>
+                                              {errors.designation && <p>designation is required</p>}
+                                          </Grid>
+
+
+
+
+
+                                        {/* <Grid item> 
                                             <TextField
                                                 {...register('designation', { required: true })}
                                                 type="text"
@@ -176,22 +223,8 @@ export default function Adduser(props) {
                                             />
                                             {errors.designation && <p>Designation is required</p>}
 
-                                        </Grid>
-                                        <Grid item> 
-                                            <TextField
-                                                {...register('username', { required: true })}
-                                                type="text"
-                                                placeholder="Username"
-                                                fullWidth
-                                                name="username"
-                                                margin="normal"
-                                                variant="outlined"
-                                                id="outlined-name"
-                                                label="Username"
-                                                autoFocus
-                                            />
-                                            {errors.username && <p>Username is required</p>}
-                                        </Grid>
+                                        </Grid> */}
+                                       
                                     </Grid>  
 
                                     <Grid container item xs={6} direction="column" >

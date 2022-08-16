@@ -48,79 +48,79 @@ export default function AddRole({...props}) {
 
   return (
     <Dialog
-    fullWidth={fullWidth}
-    maxWidth={maxWidth}
-    open={open}
-    TransitionComponent={Transition}
-    keepMounted
-    aria-describedby="alert-dialog-slide-description"
-  >
+      className="custModal"
+      fullWidth={fullWidth}
+      maxWidth={maxWidth}
+      open={open}
+      TransitionComponent={Transition}
+      keepMounted
+      aria-describedby="alert-dialog-slide-description"
+    >
    
-      <Grid container justifyContent="center" alignItems="center" direction="column">
-      <DialogTitle>Add Role</DialogTitle>
-       <DialogContent>
-                        <form>
-                            <Grid container direction="column" spacing={0}>
-                                    <Grid item>
-                                            <TextField
-                                            {...register('name', { required: true })}
-                                            type="text"
-                                            placeholder="Name"
-                                            fullWidth
-                                            name="name"
-                                            margin="normal"
-                                            variant="outlined"
-                                            id="outlined-name"
-                                            label="Name"
-                                            autoFocus
-                                        />
-                                      
+      <div className="cardinner">
+          <DialogTitle className="modalTitle" >Add Role</DialogTitle>
+          <DialogContent>
+              <form>
+                    <Grid container direction="column" spacing={0}>
+                            <Grid item>
+                                    <TextField
+                                    {...register('name', { required: true })}
+                                    type="text"
+                                    placeholder="Internal Name"
+                                    fullWidth
+                                    name="name"
+                                    margin="normal"
+                                    variant="outlined"
+                                    id="outlined-name"
+                                    label="Internal Name"
+                                    autoFocus
+                                />
+                              
 
-                                         
-                                    </Grid>
-                                    {errors.name && <span className="error">Name is required.</span>}
-                                    <Grid item>
-                                        <TextField
-                                        {...register('slug', { required: true })}
-                                        type="text"
-                                        placeholder="slug"
-                                        fullWidth
-                                        name="slug"
-                                        margin="normal"
-                                        variant="outlined"
-                                        id="outlined-name"
-                                        label="Slug"
-                                        />
-                                    </Grid>
-                                    {errors.slug && <span className="error">slug is required.</span>}
-                                    <Grid item>
-                                    <Grid item>
-                                        <TextField
-                                        {...register('description', { required: false })}
-                                        type="text"
-                                        placeholder="Description"
-                                        fullWidth
-                                        name="description"
-                                        margin="normal"
-                                        variant="outlined"
-                                        id="outlined-name"
-                                        label="Description"
-                                        />
-                                    </Grid>
-                                    </Grid>
+                                  
                             </Grid>
-                        </form>
-    </DialogContent>
-        </Grid>
-        <DialogActions>
-
-      <Button onClick={()=>{closemodel(false); snackbar((state)=>{
-        return {
-          status : false
-        }
-      })}}>Cancel</Button>
-      <Button onClick={handleSubmit(onsubmit)}>Submit</Button>
-    </DialogActions>
+                            {errors.name && <span className="error">Name is required.</span>}
+                            <Grid item>
+                                <TextField
+                                {...register('slug', { required: true })}
+                                type="text"
+                                placeholder="External Name"
+                                fullWidth
+                                name="slug"
+                                margin="normal"
+                                variant="outlined"
+                                id="outlined-name"
+                                label="External Name"
+                                />
+                            </Grid>
+                            {errors.slug && <span className="error">slug is required.</span>}
+                            <Grid item>
+                            <Grid item>
+                                <TextField
+                                {...register('description', { required: false })}
+                                type="text"
+                                placeholder="External Name"
+                                fullWidth
+                                name="description"
+                                margin="normal"
+                                variant="outlined"
+                                id="outlined-name"
+                                label="Description"
+                                />
+                            </Grid>
+                            </Grid>
+                    </Grid>
+                </form>
+            </DialogContent>
+        </div>
+        <DialogActions className="modalAction">
+          <Button variant="outlined" className="cancelBtn" onClick={()=>{closemodel(false); snackbar((state)=>{
+            return {
+              status : false
+            }
+          })}}>Cancel</Button>
+          <Button className="submitBtn" onClick={handleSubmit(onsubmit)}>Submit</Button>
+        </DialogActions>
    </Dialog>
   )
 }

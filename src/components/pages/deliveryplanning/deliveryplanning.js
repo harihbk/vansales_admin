@@ -7,12 +7,12 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { createStyles , makeStyles , Theme} from '@material-ui/core/styles';
 import {  TextField, Grid } from "@material-ui/core";
-import { FaPlus } from "react-icons/fa";
+import { AiOutlinePlus } from "react-icons/ai";
 import Add from './add';
 import CustomizedSnackbars from "../../common/CustomizedSnackbars";
 import axios from 'axios';
 import { useNavigate ,Navigate , Outlet} from "react-router-dom";
-
+import './delivery.css'
 
 const useStyles = makeStyles({
     root: {
@@ -70,61 +70,55 @@ export default function DeliveryPlanning() {
                 container
                 spacing={2}
                 direction="row"
-               
             >
 
               { tripdata && tripdata.map(e =>(
 
-                  <Card sx={{ width: '30vh',height:'30vh',margin: '7px' }} onClick={()=>navigate("/home/deliveryorderlist",{ state: { id: e._id } })}>
-                  <CardContent>
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom variant="body2">
-                     Trip ID
-                  </Typography>
+                  <Card className="tripCard" onClick={()=>navigate("/home/deliveryorderlist",{ state: { id: e._id } })}>
+                    <CardContent style={{paddingTop: 25}}>
+                      <Typography className="cardLabel" color="text.secondary"  variant="body2">
+                        Trip ID
+                      </Typography>
 
-                  <Typography className={classes.root}>
-                   { e.tripid }
-                  </Typography>
+                      <Typography className="cardVal">
+                      { e.tripid }
+                      </Typography>
 
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom variant="body2">
-                      Truck No
-                  </Typography>
+                      <Typography className="cardLabel" color="text.secondary"  variant="body2">
+                          Truck No
+                      </Typography>
 
-                  <Typography className={classes.root}>
-                  { e.truckdata[0]?.truckno }
-                  </Typography>
+                      <Typography className="cardVal">
+                      { e.truckdata[0]?.truckno }
+                      </Typography>
 
-                  <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom variant="body2">
-                      Created Date
-                  </Typography>
+                      <Typography className="cardLabel" color="text.secondary"  variant="body2">
+                          Created Date
+                      </Typography>
 
-                  <Typography className={classes.root}>
-                    { e.createdate }
-                  </Typography>
-
-
-                  </CardContent>
-
+                      <Typography className="cardVal">
+                        { e.createdate }
+                      </Typography>
+                    </CardContent>
                   </Card>
 
               ))}
           
 
-        <Card sx={{  width: '30vh',height:'30vh',margin: '7px'}} onClick={()=>addtrip()}>
-           <Grid container direction="row" justifyContent="center" alignItems="center">
-             <Grid item>
-             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom variant="body2">
-                <FaPlus size={50}/>
-            </Typography>
-            <Typography >
-                Create trip
-            </Typography>
-             </Grid>
-           </Grid>
-          
-        
-        </Card>
-
+          <Card className="tripCardAdd" onClick={()=>addtrip()}>
+            <Grid container direction="row" justifyContent="center" alignItems="center">
+              <Grid item>
+              <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom variant="body2">
+                  <AiOutlinePlus size={50}/>
+              </Typography>
+              <Typography >
+                  Create trip
+              </Typography>
+              </Grid>
             </Grid>
+          </Card>
+
+      </Grid>
            
     </>
   )
